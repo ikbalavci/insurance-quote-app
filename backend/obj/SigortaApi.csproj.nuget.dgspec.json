@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\X\\Desktop\\insurance-quote-app\\backend\\SigortaApi.csproj": {}
+    "C:\\Users\\X\\Documents\\GitHub\\insurance-quote-app\\backend\\SigortaApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\X\\Desktop\\insurance-quote-app\\backend\\SigortaApi.csproj": {
+    "C:\\Users\\X\\Documents\\GitHub\\insurance-quote-app\\backend\\SigortaApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\X\\Desktop\\insurance-quote-app\\backend\\SigortaApi.csproj",
+        "projectUniqueName": "C:\\Users\\X\\Documents\\GitHub\\insurance-quote-app\\backend\\SigortaApi.csproj",
         "projectName": "SigortaApi",
-        "projectPath": "C:\\Users\\X\\Desktop\\insurance-quote-app\\backend\\SigortaApi.csproj",
+        "projectPath": "C:\\Users\\X\\Documents\\GitHub\\insurance-quote-app\\backend\\SigortaApi.csproj",
         "packagesPath": "C:\\Users\\X\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\X\\Desktop\\insurance-quote-app\\backend\\obj\\",
+        "outputPath": "C:\\Users\\X\\Documents\\GitHub\\insurance-quote-app\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
