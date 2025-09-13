@@ -1,0 +1,6 @@
+@SigortaApi_HostAddress = http://localhost:5210
+
+GET {{SigortaApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
