@@ -53,11 +53,11 @@
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Aile bireyi ekle</label>
                         <select class="form-select" v-model="formData.aileBireyi">
+                            <option value="">Yok</option>
                             <option value="">Eş</option>
                             <option value="">Çocuk</option>
                         </select>
-                        <h5>seçince bilgileri doldurulmalı!!</h5>
-                        <button class="btn btn-primary mt-2">Bu kişiyi sigorta kapsamına dahil et</button>
+
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Doğum Teminatı</label>
@@ -93,10 +93,29 @@
             <p>Teklif almak için aşağıdaki butona tıklayın.</p>
             <button class="btn btn-success" @click="submitForm">Teklif Al</button>
         </div>
+
+        <div v-if="teklifler && teklifler.length > 0" class="row mt-4">
+            <div v-for="(t, i) in teklifler" :key="i" class="col-6 col-md-3 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <img :src="firmaLogolari[t.firma]" class="card-img-top p-2" :alt="t.firma"
+                        style="height: 50px; object-fit: contain;">
+                    <div class="card-body p-2 text-center"> <!-- padding azaltıldı -->
+                        <h6 class="card-title mb-1">{{ t.firma }}</h6> <!-- font küçültüldü -->
+                        <p class="card-text mb-1">{{ t.aciklama }}</p>
+                        <p class="card-text fw-bold mb-1">{{ t.fiyat }} TL</p>
+                        <a :href="getFirmaLink(t.firma)" class="btn btn-sm btn-primary" target="_blank">Firma
+                            Sayfası</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
     name: 'TamamlayiciSaglikForm',
     data() {
@@ -113,6 +132,21 @@ export default {
                 dogumTeminat: '',
                 cinsiyet: '',
                 meslek: '',
+            },
+            teklifler: [],
+            firmaLogolari: {
+                "Allianz": "https://otokocsigorta.com/content/uploads/companies-logo/allianz_sigorta_logo_sm-29dbb206-a.png",
+                "AXA": "https://otokocsigorta.com/content/uploads/companies-logo/axa-sigorta-logo-new-173c3b0c-1.png",
+                "Anadolu Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/anadolu_sigorta_logo_sm-833b63ee-9.png",
+                "Ak Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/aksigorta_logo_sm-b5a428da-5.png",
+                "Doğa Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/doga_sigorta_logo_sm-f05b05b0-b.png",
+                "HDI Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/hdi_sigorta_logo_sm-7b0778be-7.png",
+                "Mapfre Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/mapfre_sigorta_logo_sm-257dd028-e.png",
+                "Türkiye Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/turkiye_sigorta_logo_sm-3f0f613e-e.png",
+                "Sompo Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/sompo_sigorta_logo_sm-e75b2cba-5.png",
+                "Neova": "https://otokocsigorta.com/content/uploads/companies-logo/neova-new-logo-0f17d7ac-a.png",
+                "Ray Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/ray_sigorta_logo_sm-ef5b5e44-e.png",
+                "Quick Sigorta": "https://otokocsigorta.com/content/uploads/companies-logo/quick-sigorta-logo-new-3abc0595-e.png"
             }
         };
     },
@@ -123,8 +157,43 @@ export default {
             }
         },
         submitForm() {
-            console.log('veri', this.formData);
-            alert('bilgiler gönderildi ');
+            axios.post("http://localhost:5210/api/tamamlayiciSaglik/teklif", this.formData)
+                .then(res => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Teklifler Hazır!',
+                        text: 'Aşağıda teklifleri görebilirsiniz.'
+                    });
+
+                    console.log("Teklifler:", res.data);
+                    // Burada teklifleri ekranda gösterecek şekilde state’e kaydedebilirsin
+                    this.teklifler = res.data;
+                })
+                .catch(err => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: err.response?.data?.message || "Bir hata oluştu"
+                    });
+                });
+        },
+
+        getFirmaLink(firma) {
+            const links = {
+                "Allianz": "https://www.allianz.com.tr/tr_TR.html#/customer-lead-form",
+                "AXA": "https://www.axasigorta.com.tr/",
+                "Anadolu Sigorta": "https://www.anadolusigorta.com.tr/",
+                "Ak Sigorta": "https://www.aksigorta.com.tr/",
+                "Doğa Sigorta": "https://www.dogasigorta.com/",
+                "HDI Sigorta": "https://www.hdisigorta.com.tr/",
+                "Mapfre Sigorta": "https://www.mapfre.com.tr/sigorta-tr/bireysel/",
+                "Türkiye Sigorta": "https://www.turkiyesigorta.com.tr/",
+                "Sompo Sigorta": "https://www.somposigorta.com.tr/",
+                "Neova": "https://www.neova.com.tr/",
+                "Ray Sigorta": "https://www.raysigorta.com.tr/",
+                "Quick Sigorta": "https://www.quicksigorta.com/"
+            };
+            return links[firma] || "#";
         }
     },
 }

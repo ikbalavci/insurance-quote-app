@@ -174,45 +174,45 @@ export default {
             }
         },
         submitForm() {
-      axios.post("http://localhost:5210/api/imm/teklif", this.formData)
-        .then(res => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Teklifler Hazır!',
-            text: 'Aşağıda teklifleri görebilirsiniz.'
-          });
+            axios.post("http://localhost:5210/api/imm/teklif", this.formData)
+                .then(res => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Teklifler Hazır!',
+                        text: 'Aşağıda teklifleri görebilirsiniz.'
+                    });
 
-          console.log("Teklifler:", res.data);
-          // Burada teklifleri ekranda gösterecek şekilde state’e kaydedebilirsin
-          this.teklifler = res.data;
-        })
-        .catch(err => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Hata!',
-            text: err.response?.data?.message || "Bir hata oluştu"
-          });
-        });
-    },
+                    console.log("Teklifler:", res.data);
+                    // Burada teklifleri ekranda gösterecek şekilde state’e kaydedebilirsin
+                    this.teklifler = res.data;
+                })
+                .catch(err => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: err.response?.data?.message || "Bir hata oluştu"
+                    });
+                });
+        },
 
-    getFirmaLink(firma) {
-      const links = {
-        "Allianz": "https://www.allianz.com.tr/tr_TR.html#/customer-lead-form",
-        "AXA": "https://www.axasigorta.com.tr/",
-        "Anadolu Sigorta": "https://www.anadolusigorta.com.tr/",
-        "Ak Sigorta": "https://www.aksigorta.com.tr/",
-        "Doğa Sigorta": "https://www.dogasigorta.com/",
-        "HDI Sigorta": "https://www.hdisigorta.com.tr/",
-        "Mapfre Sigorta": "https://www.mapfre.com.tr/sigorta-tr/bireysel/",
-        "Türkiye Sigorta": "https://www.turkiyesigorta.com.tr/",
-        "Sompo Sigorta": "https://www.somposigorta.com.tr/",
-        "Neova": "https://www.neova.com.tr/",
-        "Ray Sigorta": "https://www.raysigorta.com.tr/",
-        "Quick Sigorta": "https://www.quicksigorta.com/"
-      };
-      return links[firma] || "#";
+        getFirmaLink(firma) {
+            const links = {
+                "Allianz": "https://www.allianz.com.tr/tr_TR.html#/customer-lead-form",
+                "AXA": "https://www.axasigorta.com.tr/",
+                "Anadolu Sigorta": "https://www.anadolusigorta.com.tr/",
+                "Ak Sigorta": "https://www.aksigorta.com.tr/",
+                "Doğa Sigorta": "https://www.dogasigorta.com/",
+                "HDI Sigorta": "https://www.hdisigorta.com.tr/",
+                "Mapfre Sigorta": "https://www.mapfre.com.tr/sigorta-tr/bireysel/",
+                "Türkiye Sigorta": "https://www.turkiyesigorta.com.tr/",
+                "Sompo Sigorta": "https://www.somposigorta.com.tr/",
+                "Neova": "https://www.neova.com.tr/",
+                "Ray Sigorta": "https://www.raysigorta.com.tr/",
+                "Quick Sigorta": "https://www.quicksigorta.com/"
+            };
+            return links[firma] || "#";
+        }
     }
-  }
 };
 </script>
 
