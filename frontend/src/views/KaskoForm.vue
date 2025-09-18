@@ -169,8 +169,8 @@
                 <div class="card h-100 shadow-sm">
                     <img :src="firmaLogolari[t.firma]" class="card-img-top p-2" :alt="t.firma"
                         style="height: 50px; object-fit: contain;">
-                    <div class="card-body p-2 text-center"> <!-- padding azaltıldı -->
-                        <h6 class="card-title mb-1">{{ t.firma }}</h6> <!-- font küçültüldü -->
+                    <div class="card-body p-2 text-center">
+                        <h6 class="card-title mb-1">{{ t.firma }}</h6> 
                         <p class="card-text mb-1">{{ t.aciklama }}</p>
                         <p class="card-text fw-bold mb-1">{{ t.fiyat }} TL</p>
                         <a :href="getFirmaLink(t.firma)" class="btn btn-sm btn-primary" target="_blank">Firma
@@ -242,7 +242,6 @@ export default {
                     });
 
                     console.log("Teklifler:", res.data);
-                    // Burada teklifleri ekranda gösterecek şekilde state’e kaydedebilirsin
                     this.teklifler = res.data;
                 })
                 .catch(err => {

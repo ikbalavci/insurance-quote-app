@@ -94,15 +94,22 @@ export default {
     flex-direction: row;
   }
 }
-
 .teklifbox {
   padding: 10px;
-  width: 250px; /* Genişlik sabitlendi */
-  margin: 10px; /* Kartlar arası boşluk için */
+  width: 250px;
+  margin: 10px;
+  border-radius: 12px;
+  transition: all 0.3s ease-in-out;
+}
+
+.teklifbox:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .teklifbox a {
   color: inherit;
+  text-decoration: none;
 }
 
 .boximage {
@@ -114,6 +121,11 @@ export default {
   width: 100px;
   height: 100px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.teklifbox:hover .boximage {
+  transform: scale(1.1);
 }
 
 .boxtitle {
@@ -122,6 +134,11 @@ export default {
   letter-spacing: 0.5px;
   color: #333;
   line-height: 1.3;
+  transition: color 0.3s ease-in-out;
+}
+
+.teklifbox:hover .boxtitle {
+  color: #fd963d;
 }
 
 .boxcta {
@@ -132,10 +149,12 @@ export default {
   font-size: 14px;
   font-weight: bold;
   display: inline-block;
-  transition: background 0.3s;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
 }
 
-.boxcta:hover {
+.teklifbox:hover .boxcta {
   background: #e07c1e;
+  transform: scale(1.05);
 }
+
 </style>

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SigortaApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f03e2cf8d41d9aa48583211a1b6563be5080760")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4cb4e951a6b80c204d1ff9af1d245d48f3397440")]
 [assembly: System.Reflection.AssemblyProductAttribute("SigortaApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SigortaApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

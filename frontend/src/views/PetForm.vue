@@ -5,7 +5,7 @@
             <h4>Sigortalı Bilgileri</h4>
             <form @submit.prevent="nextStep">
                 <div class="mb-3">
-                    <label class="form-label">Sigortalı Türü</label>
+                    <label class="form-label">Sigortalı Türü</label><br>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" v-model="formData.sigortaTuru" id="sahis"
                             value="sahis">

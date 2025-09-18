@@ -18,13 +18,10 @@
 export default {
   name: 'MessagesView',
   data() {
-    return {
-      messages: []
-    };
+    return { messages: [] };
   },
   mounted() {
-    const storedMessages = JSON.parse(localStorage.getItem('messages')) || [];
-    this.messages = storedMessages;
+    this.messages = JSON.parse(localStorage.getItem('messages')) || [];
   }
 };
 </script>
