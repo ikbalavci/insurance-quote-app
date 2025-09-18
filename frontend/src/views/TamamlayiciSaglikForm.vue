@@ -151,11 +151,51 @@ export default {
         };
     },
     methods: {
-        nextStep() {
-            if (this.step < 3) {
-                this.step++
+         nextStep() {
+        if (this.step === 1) {
+            if (!this.formData.sigortaTuru) {
+                Swal.fire('Hata', 'Lütfen sigortalı türünü seçin', 'warning');
+                return;
             }
-        },
+            if (!this.formData.tcKimlik || this.formData.tcKimlik.length !== 11 || isNaN(this.formData.tcKimlik)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir TC Kimlik No girin', 'warning');
+                return;
+            }
+            if (!this.formData.dogumTarihi) {
+                Swal.fire('Hata', 'Lütfen doğum tarihi girin', 'warning');
+                return;
+            }
+            if (!this.formData.telefon || this.formData.telefon.length !== 11 || !this.formData.telefon.startsWith('05')) {
+                Swal.fire('Hata', 'Lütfen geçerli bir telefon numarası girin', 'warning');
+                return;
+            }
+            if (!this.formData.email || !/\S+@\S+\.\S+/.test(this.formData.email)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir e-posta girin', 'warning');
+                return;
+            }
+        }
+
+        if (this.step === 2) {
+            if (!this.formData.aileBireyi) {
+                Swal.fire('Hata', 'Lütfen aile bireyi seçin', 'warning');
+                return;
+            }
+            if (!this.formData.dogumTeminat) {
+                Swal.fire('Hata', 'Lütfen doğum teminatını seçin', 'warning');
+                return;
+            }
+            if (!this.formData.cinsiyet) {
+                Swal.fire('Hata', 'Lütfen cinsiyeti seçin', 'warning');
+                return;
+            }
+            if (!this.formData.meslek) {
+                Swal.fire('Hata', 'Lütfen meslek bilgisini girin', 'warning');
+                return;
+            }
+        }
+
+        if (this.step < 3) this.step++;
+    },
         submitForm() {
             axios.post("http://localhost:5210/api/tamamlayiciSaglik/teklif", this.formData)
                 .then(res => {

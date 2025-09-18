@@ -225,11 +225,52 @@ export default{
         };
     },
     methods: {
-        nextStep(){
-            if (this.step <4) {
-                this.step++
+        nextStep() {
+        if (this.step === 1) {
+            if (!this.formData.policeDurum) {
+                Swal.fire('Hata', 'Lütfen poliçe durumunu seçin', 'warning');
+                return;
             }
-        },
+        }
+
+        if (this.step === 2) {
+            if (!this.formData.sigortaTuru) {
+                Swal.fire('Hata', 'Lütfen sigortalı türünü seçin', 'warning');
+                return;
+            }
+            if (!this.formData.tcKimlik || this.formData.tcKimlik.length !== 11 || isNaN(this.formData.tcKimlik)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir TC Kimlik No girin', 'warning');
+                return;
+            }
+            if (!this.formData.dogumTarihi) {
+                Swal.fire('Hata', 'Lütfen doğum tarihi girin', 'warning');
+                return;
+            }
+            if (!this.formData.telefon || this.formData.telefon.length !== 11 || !this.formData.telefon.startsWith('05')) {
+                Swal.fire('Hata', 'Lütfen geçerli bir telefon numarası girin', 'warning');
+                return;
+            }
+            if (!this.formData.email || !/\S+@\S+\.\S+/.test(this.formData.email)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir e-posta girin', 'warning');
+                return;
+            }
+        }
+
+        if (this.step === 3) {
+            const requiredFields = [
+                'plakaSehri', 'modelYili', 'marka', 'model',
+                'kullanimSekli', 'kullanimDetayi', 'motorNo', 'sasiNo', 'yolcuSayisi'
+            ];
+            for (const field of requiredFields) {
+                if (!this.formData[field]) {
+                    Swal.fire('Hata', `Lütfen ${field} alanını doldurun`, 'warning');
+                    return;
+                }
+            }
+        }
+
+        if (this.step < 4) this.step++;
+    },
         submitForm() {
             axios.post("http://localhost:5210/api/kasko/teklif", this.formData)
                 .then(res => {

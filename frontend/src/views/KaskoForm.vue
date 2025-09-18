@@ -170,7 +170,7 @@
                     <img :src="firmaLogolari[t.firma]" class="card-img-top p-2" :alt="t.firma"
                         style="height: 50px; object-fit: contain;">
                     <div class="card-body p-2 text-center">
-                        <h6 class="card-title mb-1">{{ t.firma }}</h6> 
+                        <h6 class="card-title mb-1">{{ t.firma }}</h6>
                         <p class="card-text mb-1">{{ t.aciklama }}</p>
                         <p class="card-text fw-bold mb-1">{{ t.fiyat }} TL</p>
                         <a :href="getFirmaLink(t.firma)" class="btn btn-sm btn-primary" target="_blank">Firma
@@ -228,10 +228,71 @@ export default {
     },
     methods: {
         nextStep() {
-            if (this.step < 4) {
-                this.step++
+            const tcRegex = /^\d{11}$/;
+            const phoneRegex = /^0\d{10}$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const numericRegex = /^\d+$/;
+
+            if (this.step === 1) {
+                if (!this.formData.policeDurum) {
+                    Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen poliçe durumunu seçiniz.' });
+                    return;
+                }
             }
-        },
+
+            else if (this.step === 2) {
+                if (
+                    !this.formData.sigortaTuru ||
+                    !this.formData.tcKimlik.trim() ||
+                    !this.formData.dogumTarihi ||
+                    !this.formData.telefon.trim() ||
+                    !this.formData.email.trim()
+                ) {
+                    Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm sigortalı bilgilerini doldurunuz.' });
+                    return;
+                }
+                if (!tcRegex.test(this.formData.tcKimlik)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı TC', text: 'TC Kimlik numarası 11 haneli olmalıdır.' });
+                    return;
+                }
+                if (!phoneRegex.test(this.formData.telefon)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı Telefon', text: 'Telefon numarası 0 ile başlamalı ve 11 haneli olmalıdır.' });
+                    return;
+                }
+                if (!emailRegex.test(this.formData.email)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı E-posta', text: 'Lütfen geçerli bir e-posta adresi girin.' });
+                    return;
+                }
+            }
+
+            else if (this.step === 3) {
+                if (
+                    !this.formData.plakaSehri.trim() ||
+                    !this.formData.modelYili.trim() ||
+                    !this.formData.marka.trim() ||
+                    !this.formData.model.trim() ||
+                    !this.formData.kullanimSekli.trim() ||
+                    !this.formData.kullanimDetayi.trim() ||
+                    !this.formData.motorNo.trim() ||
+                    !this.formData.sasiNo.trim() ||
+                    !this.formData.yolcuSayisi.trim()
+                ) {
+                    Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm araç bilgilerini doldurunuz.' });
+                    return;
+                }
+                if (!numericRegex.test(this.formData.modelYili) || this.formData.modelYili.length !== 4) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı Model Yılı', text: 'Lütfen 4 haneli bir yıl girin.' });
+                    return;
+                }
+                if (!numericRegex.test(this.formData.yolcuSayisi)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı Yolcu Sayısı', text: 'Yolcu sayısı sayısal olmalıdır.' });
+                    return;
+                }
+            }
+
+            if (this.step < 4) this.step++;
+        }
+        ,
         submitForm() {
             axios.post("http://localhost:5210/api/kasko/teklif", this.formData)
                 .then(res => {

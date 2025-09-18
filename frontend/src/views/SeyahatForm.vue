@@ -187,11 +187,76 @@ export default {
         };
     },
     methods: {
-        nextStep() {
-            if (this.step < 3) {
-                this.step++
+         nextStep() {
+        if (this.step === 1) {
+            if (!this.formData.sigortaTuru) {
+                Swal.fire('Hata', 'Lütfen sigortalı türünü seçin', 'warning');
+                return;
             }
-        },
+            if (!this.formData.tcKimlik || this.formData.tcKimlik.length !== 11 || isNaN(this.formData.tcKimlik)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir TC Kimlik No girin', 'warning');
+                return;
+            }
+            if (!this.formData.dogumTarihi) {
+                Swal.fire('Hata', 'Lütfen doğum tarihi girin', 'warning');
+                return;
+            }
+            if (!this.formData.telefon || this.formData.telefon.length !== 11 || !this.formData.telefon.startsWith('05')) {
+                Swal.fire('Hata', 'Lütfen geçerli bir telefon numarası girin', 'warning');
+                return;
+            }
+            if (!this.formData.email || !/\S+@\S+\.\S+/.test(this.formData.email)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir e-posta girin', 'warning');
+                return;
+            }
+        }
+
+        if (this.step === 2) {
+            if (!this.formData.bolge) {
+                Swal.fire('Hata', 'Lütfen seyahat bölgesini seçin', 'warning');
+                return;
+            }
+            if (!this.formData.ulke) {
+                Swal.fire('Hata', 'Lütfen seyahat edilecek ülkeyi girin', 'warning');
+                return;
+            }
+            if (!this.formData.paket) {
+                Swal.fire('Hata', 'Lütfen seyahat paketini seçin', 'warning');
+                return;
+            }
+            if (!this.formData.axaUrun) {
+                Swal.fire('Hata', 'Lütfen AXA ürün seçimini yapın', 'warning');
+                return;
+            }
+            if (!this.formData.pandemi) {
+                Swal.fire('Hata', 'Lütfen pandemi teminatını seçin', 'warning');
+                return;
+            }
+            if (!this.formData.kapkacTeminat) {
+                Swal.fire('Hata', 'Lütfen kapkaç teminatını seçin', 'warning');
+                return;
+            }
+            if (!this.formData.seyahatBaslangic) {
+                Swal.fire('Hata', 'Lütfen seyahat başlangıç tarihini girin', 'warning');
+                return;
+            }
+            if (!this.formData.seyahatBitis) {
+                Swal.fire('Hata', 'Lütfen seyahat bitiş tarihini girin', 'warning');
+                return;
+            }
+            if (this.formData.seyahatBaslangic && this.formData.seyahatBitis &&
+                new Date(this.formData.seyahatBaslangic) > new Date(this.formData.seyahatBitis)) {
+                Swal.fire('Hata', 'Seyahat bitiş tarihi, başlangıç tarihinden önce olamaz', 'warning');
+                return;
+            }
+            if (!this.formData.meslek) {
+                Swal.fire('Hata', 'Lütfen meslek bilgisini girin', 'warning');
+                return;
+            }
+        }
+
+        if (this.step < 3) this.step++;
+    },
         submitForm() {
             axios.post("http://localhost:5210/api/seyahat/teklif", this.formData)
                 .then(res => {

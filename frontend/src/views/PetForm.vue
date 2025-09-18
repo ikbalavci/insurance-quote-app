@@ -76,19 +76,7 @@
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Pet Cinsi</label>
                         <select class="form-select" v-model="formData.petCinsi">
-                            <option>Siyam kedisi</option>
-                            <option>British</option>
-                            <option>Scotish</option>
-                            <option>İran kedisi</option>
-                            <option>Birman</option>
-                            <option>Sarman</option>
-                            <option>Tekir</option>
-                            <option>Doberman</option>
-                            <option>Buldog</option>
-                            <option>Golden Retriever</option>
-                            <option>Anadolu Çoban Köpeği</option>
-                            <option>Pug</option>
-                            <option>Afgan Tazısı</option>
+                            <option v-for="cins in cinsler[formData.petTuru]" :key="cins">{{ cins }}</option>
                         </select>
                     </div>
                     <div class="mb-3 col-md-6">
@@ -99,6 +87,7 @@
                 <button class="btn btn-primary mt-2" type="submit">TEKLİF AL</button>
             </form>
         </div>
+
         <div v-if="step === 3" class="form-section text-center">
             <h4>Tüm Bilgiler Alındı 🎉</h4>
             <p>Teklif almak için aşağıdaki butona tıklayın.</p>
@@ -110,8 +99,8 @@
                 <div class="card h-100 shadow-sm">
                     <img :src="firmaLogolari[t.firma]" class="card-img-top p-2" :alt="t.firma"
                         style="height: 50px; object-fit: contain;">
-                    <div class="card-body p-2 text-center"> <!-- padding azaltıldı -->
-                        <h6 class="card-title mb-1">{{ t.firma }}</h6> <!-- font küçültüldü -->
+                    <div class="card-body p-2 text-center">
+                        <h6 class="card-title mb-1">{{ t.firma }}</h6>
                         <p class="card-text mb-1">{{ t.aciklama }}</p>
                         <p class="card-text fw-bold mb-1">{{ t.fiyat }} TL</p>
                         <a :href="getFirmaLink(t.firma)" class="btn btn-sm btn-primary" target="_blank">Firma
@@ -120,16 +109,15 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 </template>
 
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+
 export default {
-    name: 'DaskForm',
+    name: 'PetSigortaForm',
     data() {
         return {
             step: 1,
@@ -145,7 +133,10 @@ export default {
                 petTuru: '',
                 petCinsi: '',
                 petChipNo: ''
-
+            },
+            cinsler: {
+                Kedi: ['Siyam kedisi', 'British', 'Scotish', 'İran kedisi', 'Birman', 'Sarman', 'Tekir'],
+                Köpek: ['Doberman', 'Buldog', 'Golden Retriever', 'Anadolu Çoban Köpeği', 'Pug', 'Afgan Tazısı']
             },
             teklifler: [],
             firmaLogolari: {
@@ -164,12 +155,65 @@ export default {
             }
         };
     },
+    watch: {
+        'formData.petTuru'() {
+            this.formData.petCinsi = ''; // tür değişirse önceki cinsi temizle
+        }
+    },
     methods: {
         nextStep() {
-            if (this.step < 3) {
-                this.step++;
+        if (this.step === 1) {
+            if (!this.formData.sigortaTuru) {
+                Swal.fire('Hata', 'Lütfen sigortalı türünü seçin', 'warning');
+                return;
             }
-        },
+            if (!this.formData.tcKimlik || this.formData.tcKimlik.length !== 11 || isNaN(this.formData.tcKimlik)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir TC Kimlik No girin', 'warning');
+                return;
+            }
+            if (!this.formData.dogumTarihi) {
+                Swal.fire('Hata', 'Lütfen doğum tarihi girin', 'warning');
+                return;
+            }
+            if (!this.formData.telefon || this.formData.telefon.length !== 11 || !this.formData.telefon.startsWith('05')) {
+                Swal.fire('Hata', 'Lütfen geçerli bir telefon numarası girin', 'warning');
+                return;
+            }
+            if (!this.formData.email || !/\S+@\S+\.\S+/.test(this.formData.email)) {
+                Swal.fire('Hata', 'Lütfen geçerli bir e-posta girin', 'warning');
+                return;
+            }
+        }
+
+        if (this.step === 2) {
+            if (!this.formData.petAdi) {
+                Swal.fire('Hata', 'Lütfen pet adını girin', 'warning');
+                return;
+            }
+            if (!this.formData.petDogumTarihi) {
+                Swal.fire('Hata', 'Lütfen pet doğum tarihini girin', 'warning');
+                return;
+            }
+            if (!this.formData.petCinsiyet) {
+                Swal.fire('Hata', 'Lütfen pet cinsiyetini seçin', 'warning');
+                return;
+            }
+            if (!this.formData.petTuru) {
+                Swal.fire('Hata', 'Lütfen pet türünü seçin', 'warning');
+                return;
+            }
+            if (!this.formData.petCinsi) {
+                Swal.fire('Hata', 'Lütfen pet cinsini seçin', 'warning');
+                return;
+            }
+            if (!this.formData.petChipNo) {
+                Swal.fire('Hata', 'Lütfen pet chip numarasını girin', 'warning');
+                return;
+            }
+        }
+
+        if (this.step < 3) this.step++;
+    },
         submitForm() {
             axios.post("http://localhost:5210/api/pet/teklif", this.formData)
                 .then(res => {
@@ -178,9 +222,6 @@ export default {
                         title: 'Teklifler Hazır!',
                         text: 'Aşağıda teklifleri görebilirsiniz.'
                     });
-
-                    console.log("Teklifler:", res.data);
-                    // Burada teklifleri ekranda gösterecek şekilde state’e kaydedebilirsin
                     this.teklifler = res.data;
                 })
                 .catch(err => {
@@ -191,7 +232,6 @@ export default {
                     });
                 });
         },
-
         getFirmaLink(firma) {
             const links = {
                 "Allianz": "https://www.allianz.com.tr/tr_TR.html#/customer-lead-form",

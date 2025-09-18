@@ -193,52 +193,62 @@ export default {
   },
   methods: {
     nextStep() {
-      if (this.step === 1) {
-        if (
-          !this.formData.sigortaTuru ||
-          !this.formData.tcKimlik.trim() ||
-          !this.formData.dogumTarihi ||
-          !this.formData.telefon.trim() ||
-          !this.formData.email.trim()
-        ) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Eksik Bilgi',
-            text: 'Lütfen tüm sigortalı bilgilerini doldurunuz.'
-          });
-          return;
-        }
-      } else if (this.step === 2) {
-        if (
-          !this.formData.adresKodu.trim() ||
-          !this.formData.adres.trim()
-        ) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Eksik Bilgi',
-            text: 'Lütfen tüm adres bilgilerini doldurunuz.'
-          });
-          return;
-        }
-      } else if (this.step === 3) {
-        if (
-          !this.formData.katSayisi ||
-          !this.formData.brutMetre.trim() ||
-          !this.formData.insaatYili
-        ) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Eksik Bilgi',
-            text: 'Lütfen tüm yapı bilgilerini doldurunuz.'
-          });
-          return;
-        }
-      }
+  if (this.step === 1) {
+    const tcRegex = /^\d{11}$/;
+    const phoneRegex = /^0\d{10}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      if (this.step < 4) {
-        this.step++;
-      }
-    },
+    if (
+      !this.formData.sigortaTuru ||
+      !this.formData.tcKimlik.trim() ||
+      !this.formData.dogumTarihi ||
+      !this.formData.telefon.trim() ||
+      !this.formData.email.trim()
+    ) {
+      Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm sigortalı bilgilerini doldurunuz.' });
+      return;
+    }
+
+    if (!tcRegex.test(this.formData.tcKimlik)) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı TC', text: 'TC Kimlik numarası 11 haneli olmalıdır.' });
+      return;
+    }
+
+    if (!phoneRegex.test(this.formData.telefon)) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı Telefon', text: 'Telefon numarası 0 ile başlamalı ve 11 haneli olmalıdır.' });
+      return;
+    }
+
+    if (!emailRegex.test(this.formData.email)) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı E-posta', text: 'Lütfen geçerli bir e-posta adresi girin.' });
+      return;
+    }
+
+  } else if (this.step === 2) {
+    if (!this.formData.adresKodu.trim() || !this.formData.adres.trim()) {
+      Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm adres bilgilerini doldurunuz.' });
+      return;
+    }
+  } else if (this.step === 3) {
+    const numericRegex = /^\d+$/;
+    if (
+      !this.formData.katSayisi ||
+      !this.formData.brutMetre.trim() ||
+      !this.formData.insaatYili
+    ) {
+      Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm yapı bilgilerini doldurunuz.' });
+      return;
+    }
+
+    if (!numericRegex.test(this.formData.brutMetre)) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı Brüt m²', text: 'Lütfen geçerli bir sayı girin.' });
+      return;
+    }
+  }
+
+  if (this.step < 4) this.step++;
+}
+,
 
     submitForm() {
       axios.post("http://localhost:5210/api/dask/teklif", this.formData)
@@ -250,7 +260,6 @@ export default {
           });
 
           console.log("Teklifler:", res.data);
-          // Burada teklifleri ekranda gösterecek şekilde state’e kaydedebilirsin
           this.teklifler = res.data;
         })
         .catch(err => {

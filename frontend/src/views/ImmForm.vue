@@ -82,8 +82,8 @@
                 <div class="card h-100 shadow-sm">
                     <img :src="firmaLogolari[t.firma]" class="card-img-top p-2" :alt="t.firma"
                         style="height: 50px; object-fit: contain;">
-                    <div class="card-body p-2 text-center"> 
-                        <h6 class="card-title mb-1">{{ t.firma }}</h6> 
+                    <div class="card-body p-2 text-center">
+                        <h6 class="card-title mb-1">{{ t.firma }}</h6>
                         <p class="card-text mb-1">{{ t.aciklama }}</p>
                         <p class="card-text fw-bold mb-1">{{ t.fiyat }} TL</p>
                         <a :href="getFirmaLink(t.firma)" class="btn btn-sm btn-primary" target="_blank">Firma
@@ -138,6 +138,12 @@ export default {
     },
     methods: {
         nextStep() {
+            const tcRegex = /^\d{11}$/; 
+            const phoneRegex = /^0\d{10}$/; 
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+            const plakaRegex = /^[0-9]{2}\s?[A-Z]{1,3}\s?[0-9]{2,4}$/i; 
+            const numericRegex = /^\d+$/;
+
             if (this.step === 1) {
                 if (
                     !this.formData.sigortaTuru ||
@@ -146,32 +152,44 @@ export default {
                     !this.formData.telefon.trim() ||
                     !this.formData.email.trim()
                 ) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Eksik Bilgi',
-                        text: 'Lütfen tüm sigortalı bilgilerini doldurunuz.'
-                    });
+                    Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm sigortalı bilgilerini doldurunuz.' });
                     return;
                 }
-            } else if (this.step === 2) {
+                if (!tcRegex.test(this.formData.tcKimlik)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı TC', text: 'TC Kimlik numarası 11 haneli olmalıdır.' });
+                    return;
+                }
+                if (!phoneRegex.test(this.formData.telefon)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı Telefon', text: 'Telefon numarası 0 ile başlamalı ve 11 haneli olmalıdır.' });
+                    return;
+                }
+                if (!emailRegex.test(this.formData.email)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı E-posta', text: 'Lütfen geçerli bir e-posta adresi girin.' });
+                    return;
+                }
+            }
+
+            else if (this.step === 2) {
                 if (
                     !this.formData.plaka.trim() ||
                     !this.formData.ruhsatSeriNo.trim() ||
                     !this.formData.marka.trim() ||
                     !this.formData.uretimYili.trim()
-
                 ) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Eksik Bilgi',
-                        text: 'Lütfen tüm adres bilgilerini doldurunuz.'
-                    });
+                    Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm araç bilgilerini doldurunuz.' });
+                    return;
+                }
+                if (!plakaRegex.test(this.formData.plaka)) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı Plaka', text: 'Plaka formatı geçerli değil (örn: 34 ABC 1234).' });
+                    return;
+                }
+                if (!numericRegex.test(this.formData.uretimYili) || this.formData.uretimYili.length !== 4) {
+                    Swal.fire({ icon: 'warning', title: 'Hatalı Yıl', text: 'Lütfen geçerli bir üretim yılı girin (4 haneli sayı).' });
                     return;
                 }
             }
-            if (this.step < 3) {
-                this.step++;
-            }
+
+            if (this.step < 3) this.step++;
         },
         submitForm() {
             axios.post("http://localhost:5210/api/imm/teklif", this.formData)
@@ -183,7 +201,6 @@ export default {
                     });
 
                     console.log("Teklifler:", res.data);
-                    // Burada teklifleri ekranda gösterecek şekilde state’e kaydedebilirsin
                     this.teklifler = res.data;
                 })
                 .catch(err => {

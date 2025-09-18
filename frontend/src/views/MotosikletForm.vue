@@ -202,11 +202,71 @@ export default {
         };
     },
     methods: {
-        nextStep(){
-            if (this.step < 4) {
-                this.step++     
-            }
-        },
+        nextStep() {
+  // Regexler
+  const tcRegex = /^\d{11}$/;
+  const phoneRegex = /^0\d{10}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const numericRegex = /^\d+$/;
+
+  // Step 1: Poliçe durumu
+  if (this.step === 1) {
+    if (!this.formData.policeDurum) {
+      Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen poliçe durumunu seçiniz.' });
+      return;
+    }
+  }
+
+  // Step 2: Sigortalı bilgileri
+  else if (this.step === 2) {
+    if (
+      !this.formData.sigortaTuru ||
+      !this.formData.tcKimlik.trim() ||
+      !this.formData.dogumTarihi ||
+      !this.formData.telefon.trim() ||
+      !this.formData.email.trim()
+    ) {
+      Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm sigortalı bilgilerini doldurunuz.' });
+      return;
+    }
+    if (!tcRegex.test(this.formData.tcKimlik)) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı TC', text: 'TC Kimlik numarası 11 haneli olmalıdır.' });
+      return;
+    }
+    if (!phoneRegex.test(this.formData.telefon)) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı Telefon', text: 'Telefon numarası 0 ile başlamalı ve 11 haneli olmalıdır.' });
+      return;
+    }
+    if (!emailRegex.test(this.formData.email)) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı E-posta', text: 'Lütfen geçerli bir e-posta adresi girin.' });
+      return;
+    }
+  }
+
+  // Step 3: Araç bilgileri
+  else if (this.step === 3) {
+    if (
+      !this.formData.plakaSehri.trim() ||
+      !this.formData.modelYili.trim() ||
+      !this.formData.marka.trim() ||
+      !this.formData.model.trim() ||
+      !this.formData.kullanimSekli.trim() ||
+      !this.formData.kullanimDetayi.trim() ||
+      !this.formData.motorNo.trim() ||
+      !this.formData.sasiNo.trim()
+    ) {
+      Swal.fire({ icon: 'warning', title: 'Eksik Bilgi', text: 'Lütfen tüm araç bilgilerini doldurunuz.' });
+      return;
+    }
+    if (!numericRegex.test(this.formData.modelYili) || this.formData.modelYili.length !== 4) {
+      Swal.fire({ icon: 'warning', title: 'Hatalı Model Yılı', text: 'Lütfen 4 haneli bir yıl girin.' });
+      return;
+    }
+  }
+
+  if (this.step < 4) this.step++;
+}
+,
         submitForm() {
             axios.post("http://localhost:5210/api/motosiklet/teklif", this.formData)
                 .then(res => {
